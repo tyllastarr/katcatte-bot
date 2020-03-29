@@ -1,0 +1,22 @@
+{
+  "name": "katcatte-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tyllastarr/katcatte-bot.git"
+  },
+  "author": "Tyll'a",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tyllastarr/katcatte-bot/issues"
+  },
+  "homepage": "https://github.com/tyllastarr/katcatte-bot#readme",
+  "dependencies": {
+    "discord.js": "^12.1.1"
+  }
+}
