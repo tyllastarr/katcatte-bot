@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/tyllastarr/katcatte-bot#readme",
   "dependencies": {
+    "@mysql/xdevapi": "8.0.19",
     "discord.js": "^12.1.1"
   }
 }
