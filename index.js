@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const client = new Discord.Client;
 const config = require("./config.json");
+const timerChannel = config.timerChannel;
 
 client.once('ready', () => {
     console.log('Ready!');
@@ -15,12 +16,12 @@ client.on('message', message => {
         var result;
         console.log(numSides);
         if (numSides.length == 0) {
-            console.log("Error: No parameters");
+            console.log("Something's nyot quite right here!  You need to put the number of sides for the dice!");
         } else if (numSides < 1) {
-            console.log("Error: Dice cannot have zero or negative sides");
+            console.log("Something's nyot quite right here!  A die can't have zero or negative sides!");
         } else {
             result = Math.floor(Math.random() * numSides) + 1;
-            message.channel.send(`You rolled a ${result} on your ${numSides}-sided die!`);
+            message.channel.send(`Nya!  You rolled a ${result} on your ${numSides}-sided die!`);
         }
     }
 });
