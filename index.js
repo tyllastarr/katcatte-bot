@@ -3,16 +3,19 @@ const client = new Discord.Client;
 const config = require("./config.json");
 const timerChannel = config.timerChannel;
 const mysqlx = require('@mysql/xdevapi');
-const dbConnection = mysqlx.getSession({
-    user: config.dbUser,
-    password: config.dbPassword,
-    host: config.dbHost,
-    port: config.dbPort
-});
+var dbSession;
 
 client.once('ready', () => {
     console.log('Ready!');
 });
+
+mysqlx.getSession({
+    user: config.dbUser,
+    password: config.dbPassword,
+    host: config.dbHost,
+    port: config.dbPort,
+    schema: config.dbSchema
+}).then(session => {dbSession = session});
 
 client.login(config.token);
 
@@ -32,6 +35,6 @@ client.on('message', message => {
         }
     }
     else if(message.content.startsWith(`${config.prefix}quack`)) {
-        dbConnection.getSchema(config.dbSchema).getTable("Streamers").select(["*"]).execute(row => {message.channel.send(row)});
+        console.log(dbSession.sql("SELECT * FROM Streamers").execute());
     }
 });
