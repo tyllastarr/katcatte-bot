@@ -35,6 +35,8 @@ client.on('message', message => {
         }
     }
     else if(message.content.startsWith(`${config.prefix}quack`)) {
-        console.log(dbSession.sql("SELECT * FROM Streamers").execute());
+        dbSession.sql("SELECT * FROM Streamers").execute(row => {
+            message.channel.send(row);
+        });
     }
 });
