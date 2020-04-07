@@ -5,7 +5,7 @@ const timerChannel = config.timerChannel;
 const mysqlx = require('@mysql/xdevapi');
 const dbConnection = mysqlx.getSession({
     user: config.dbUser,
-    password = config.dbPassword,
+    password: config.dbPassword,
     host: config.dbHost,
     port: config.dbPort
 });
@@ -32,6 +32,6 @@ client.on('message', message => {
         }
     }
     else if(message.content.startsWith(`${config.prefix}quack`)) {
-        message.channel.send(dbConnection.sql("SELECT * FROM Streamers;"))
+        dbConnection.getSchema(config.dbSchema).getTable("Streamers").select(["*"]).execute(row => {message.channel.send(row)});
     }
 });
