@@ -6,16 +6,16 @@ const mysqlx = require('@mysql/xdevapi');
 var dbSession;
 
 client.once('ready', () => {
+    mysqlx.getSession({
+        user: config.dbUser,
+        password: config.dbPassword,
+        host: config.dbHost,
+        port: config.dbPort,
+        schema: config.dbSchema
+    }).then(session => {dbSession = session});
     console.log('Ready!');
 });
 
-mysqlx.getSession({
-    user: config.dbUser,
-    password: config.dbPassword,
-    host: config.dbHost,
-    port: config.dbPort,
-    schema: config.dbSchema
-}).then(session => {dbSession = session});
 
 client.login(config.token);
 
