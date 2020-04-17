@@ -35,7 +35,7 @@ client.on('message', message => {
         }
     }
     else if(message.content.startsWith(`${config.prefix}quack`)) {
-        dbSession.sql("SELECT * FROM Streamers").execute(row => {
+        dbSession.sql("SELECT Streamers.StreamerName, Streamers.StreamLink, Streams.StreamDescription, Reminders.Hour, Reminders.Minute, Reminders.DayOfWeek FROM Reminders INNER JOIN Streams ON Reminders.StreamID=Streams.StreamID INNER JOIN Streamers ON Streams.StreamerID=Streamers.StreamerID").execute(row => {
             message.channel.send(row);
         });
     }
