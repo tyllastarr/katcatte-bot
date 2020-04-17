@@ -15,7 +15,7 @@ log4js.configure({
 });
 const logger = log4js.getLogger();
 
-var dates = [];
+var streams = [];
 
 client.once("ready", () => {
     mysqlx.getSession({
@@ -27,9 +27,30 @@ client.once("ready", () => {
     }).then(session => {
         dbSession = session;
         dbSession.sql("SELECT Streamers.StreamerName, Streamers.StreamLink, Streams.StreamDescription, Reminders.Hour, Reminders.Minute, Reminders.DayOfWeek FROM Reminders INNER JOIN Streams ON Reminders.StreamID=Streams.StreamID INNER JOIN Streamers ON Streams.StreamerID=Streamers.StreamerID").execute(row => {
-            logger.debug(`Hour: ${row[3]}.  Minute: ${row[4]}.  Day of week: ${row[5]}`);
+            streams.push({streamer: row[0], link: row[1], desc: row[2], hour: row[3], minute: row[4], day: row[5]});
+ //           logger.debug(`Hour: ${row[3]}.  Minute: ${row[4]}.  Day of week: ${row[5]}`);
+ //           logger.debug(streams);
         });
         logger.info("Ready!");
+        setInterval(function() {
+//            logger.debug("A minute has passed.");
+            let now = new Date();
+            let currentHour = now.getHours();
+            let currentMinute = now.getMinutes();
+            let currentDay = now.getDay();
+//            logger.debug(currentHour);
+//            logger.debug(currentMinute);
+//            logger.debug(currentDay);
+        streams.forEach(function(item, index) {
+                if(item.hour == currentHour && item.minute == currentMinute && item.day == currentDay) {
+                    logger.warn(`Match!  Stream time is day ${item.day} at ${item.hour}:${item.minute}.  Current time is day ${currentDay} at ${currentHour}:${currentMinute}.`);
+                }
+                else {
+                    logger.info(`No match!  Stream time is day ${item.day} at ${item.hour}:${item.minute}.  Current time is day ${currentDay} at ${currentHour}:${currentMinute}.`);
+                }
+//                logger.debug(item);
+            });
+        }, 60000);
     });
 });
 
@@ -51,10 +72,10 @@ client.on("message", message => {
             message.channel.send(`Nya!  You rolled a ${result} on your ${numSides}-sided die!`);
         }
     }
-    else if (message.content.startsWith(`${config.prefix}quack`)) {
+/*    else if (message.content.startsWith(`${config.prefix}quack`)) {
         dbSession.sql("SELECT Streamers.StreamerName, Streamers.StreamLink, Streams.StreamDescription, Reminders.Hour, Reminders.Minute, Reminders.DayOfWeek FROM Reminders INNER JOIN Streams ON Reminders.StreamID=Streams.StreamID INNER JOIN Streamers ON Streams.StreamerID=Streamers.StreamerID").execute(row => {
             message.channel.send(row);
             logger.debug(row[3]);
         });
-    }
+    }*/
 });
