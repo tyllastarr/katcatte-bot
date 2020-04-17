@@ -13,7 +13,9 @@ log4js.configure({
     },
     categories: { default: { appenders: ["file", "out"], level: "debug" } }
 });
-const logger = log4js.getLogger("katcatte");
+const logger = log4js.getLogger();
+
+var dates = [];
 
 client.once("ready", () => {
     mysqlx.getSession({
@@ -22,8 +24,13 @@ client.once("ready", () => {
         host: config.dbHost,
         port: config.dbPort,
         schema: config.dbSchema
-    }).then(session => { dbSession = session });
-    logger.info("Ready!");
+    }).then(session => {
+        dbSession = session;
+        dbSession.sql("SELECT Streamers.StreamerName, Streamers.StreamLink, Streams.StreamDescription, Reminders.Hour, Reminders.Minute, Reminders.DayOfWeek FROM Reminders INNER JOIN Streams ON Reminders.StreamID=Streams.StreamID INNER JOIN Streamers ON Streams.StreamerID=Streamers.StreamerID").execute(row => {
+            logger.debug(`Hour: ${row[3]}.  Minute: ${row[4]}.  Day of week: ${row[5]}`);
+        });
+        logger.info("Ready!");
+    });
 });
 
 
@@ -47,6 +54,7 @@ client.on("message", message => {
     else if (message.content.startsWith(`${config.prefix}quack`)) {
         dbSession.sql("SELECT Streamers.StreamerName, Streamers.StreamLink, Streams.StreamDescription, Reminders.Hour, Reminders.Minute, Reminders.DayOfWeek FROM Reminders INNER JOIN Streams ON Reminders.StreamID=Streams.StreamID INNER JOIN Streamers ON Streams.StreamerID=Streamers.StreamerID").execute(row => {
             message.channel.send(row);
+            logger.debug(row[3]);
         });
     }
 });
